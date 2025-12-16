@@ -21,38 +21,20 @@ body{
   width:95%;
   max-width:900px;
   border:2px solid #00ff55;
-  box-shadow:0 0 20px #00ff55;
   padding:20px;
   margin-top:20px;
 }
-h1{
-  text-align:center;
-  text-shadow:0 0 12px #00ff55;
-  margin-bottom:5px;
-}
+h1{text-align:center;margin-bottom:5px;}
 
 /* ===== INTRO ===== */
-.intro{
-  text-align:center;
-  margin:10px 0 15px;
-}
+.intro{text-align:center;margin:10px 0 15px;}
 .terminal-line{
-  font-size:14px;
-  letter-spacing:2px;
-  opacity:.85;
+  font-size:14px;letter-spacing:2px;opacity:.8;
   animation:blink 1.2s infinite;
 }
 @keyframes blink{50%{opacity:.4;}}
-.tagline{
-  margin-top:8px;
-  font-size:13px;
-  line-height:1.6;
-  opacity:.8;
-}
-.tagline span{
-  color:#00ff99;
-  text-shadow:0 0 6px #00ff99;
-}
+.tagline{margin-top:8px;font-size:13px;line-height:1.6;opacity:.75;}
+.tagline span{color:#00ff99;}
 .divider{
   height:1px;
   background:linear-gradient(to right,transparent,#00ff55,transparent);
@@ -61,92 +43,86 @@ h1{
 
 /* ===== BUTTONS ===== */
 .choose-btn{
-  width:180px;
-  height:42px;
+  width:180px;height:42px;
   border-radius:22px;
   border:1px solid #00ff55;
   margin:10px auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  background:linear-gradient(145deg,#001a00,#000);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;background:#000;
 }
-.choose-btn:hover{box-shadow:0 0 10px #00ff55;}
+.choose-btn:hover{background:#001a00;}
 
 button{
-  background:#000;
-  color:#00ff55;
+  background:#000;color:#00ff55;
   border:1px solid #00ff55;
-  padding:9px 14px;
-  margin:6px;
+  padding:8px 14px;margin:6px;
 }
-button:hover{
-  background:#00ff55;
-  color:#000;
-  cursor:pointer;
-}
+button:hover{background:#00ff55;color:#000;cursor:pointer;}
 
-/* ===== PROCEED BUTTON SPECIAL ===== */
 #proceedBtn{
-  width:260px;
-  height:46px;
-  font-size:15px;
-  letter-spacing:2px;
-  font-weight:bold;
-  border-radius:30px;
-  margin:14px auto;
-  display:block;
-  background:linear-gradient(145deg,#001a00,#000);
-  box-shadow:0 0 8px #00ff55,inset 0 0 8px #003300;
-  transition:.3s;
+  width:260px;height:46px;
+  font-size:15px;letter-spacing:2px;font-weight:bold;
+  border-radius:30px;margin:14px auto;display:block;
+  background:#000;border:1.5px solid #00ff55;
 }
-#proceedBtn:hover{
-  background:#00ff55;
-  color:#000;
-  box-shadow:0 0 18px #00ff55,0 0 30px #00ff55;
-  transform:scale(1.04);
-}
+#proceedBtn:hover{background:#00ff55;color:#000;}
 
 .hidden{display:none;}
-
 .popup{
-  text-align:center;
-  border:1px solid #00ff55;
-  padding:8px;
-  margin-top:10px;
-  box-shadow:0 0 10px #00ff55;
+  text-align:center;border:1px solid #00ff55;
+  padding:8px;margin-top:10px;
 }
 
 /* ===== SPINNER ===== */
 .spinner{
-  width:45px;height:45px;
-  margin:20px auto;
-  border:3px solid #003300;
-  border-top:3px solid #00ff55;
-  border-radius:50%;
-  animation:spin .6s linear infinite;
+  width:45px;height:45px;margin:20px auto;
+  border:3px solid #003300;border-top:3px solid #00ff55;
+  border-radius:50%;animation:spin .6s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ===== RESULT ===== */
-.page{
-  border:1px dashed #00ff55;
-  padding:12px;
-  margin-top:15px;
+#output{
+  text-align:center;
 }
+
+/* 🔥 CANVAS BOX (AUTO FIT) 🔥 */
+.page{
+  display:inline-block;        /* <<< main fix */
+  border:1px dashed #00ff55;
+  padding:10px;
+  margin:15px auto;
+}
+
+/* Canvas size control */
 canvas{
-  max-width:320px;
+  max-width:260px;
+  max-height:380px;
+  width:auto;
+  height:auto;
+  display:block;
+  margin:0 auto;
   border:1px solid #00ff55;
 }
+
+/* Mobile */
+@media(max-width:600px){
+  canvas{
+    max-width:220px;
+    max-height:320px;
+  }
+}
+
 .details{
   font-size:12px;
   margin-top:6px;
   opacity:.85;
+  text-align:center;
 }
+
 .footer{
   text-align:center;
-  margin-top:10px;
+  margin-top:8px;
   font-size:12px;
   opacity:.7;
 }
@@ -220,14 +196,17 @@ proceedBtn.onclick=async()=>{
     for(let i=1;i<=pdf.numPages;i++){
       const page=await pdf.getPage(i);
       const viewport=page.getViewport({scale:2.5});
+
       const canvas=document.createElement("canvas");
       const ctx=canvas.getContext("2d");
       canvas.width=viewport.width;
       canvas.height=viewport.height;
+
       await page.render({canvasContext:ctx,viewport}).promise;
 
       const png=canvas.toDataURL("image/png");
       const jpg=canvas.toDataURL("image/jpeg",1.0);
+
       const pngSize=Math.round((png.length*3)/4/1024);
       const jpgSize=Math.round((jpg.length*3)/4/1024);
 
@@ -289,7 +268,6 @@ function download(data,name){
   const a=document.createElement("a");
   a.href=data;a.download=name;a.click();
 }
-
 function saveZip(zip,name){
   zip.generateAsync({type:"blob"}).then(b=>{
     const a=document.createElement("a");
